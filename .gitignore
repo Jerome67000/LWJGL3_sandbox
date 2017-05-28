@@ -1,0 +1,18 @@
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.war
+*.ear
+
+# virtual machine crash logs
+hs_err_pid*
+
+# User-specific stuff:
+.idea
+
+# Gradle:
+.idea/gradle.xml
+.idea/libraries

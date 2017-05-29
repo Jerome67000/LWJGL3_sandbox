@@ -8,4 +8,5 @@ public interface GameApplication {
     void input(Window window);
     void update(float delta);
     void render(Window window);
+    void cleanup();
 }

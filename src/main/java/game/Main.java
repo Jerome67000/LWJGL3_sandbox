@@ -7,10 +7,9 @@ import engine.Window;
 public class Main {
     public static void main(String[] args) {
         try {
-            boolean vSync = true;
-            GameApplication gameLogic = new MyGame();
-            GameEngine gameEng = new GameEngine("LWJGL Sandbox : " + gameLogic.getClass().getSimpleName(), 600, 480, vSync, gameLogic);
-            gameEng.start();
+            GameApplication myGame = new MyGame();
+            GameEngine engine = new GameEngine("LWJGL Sandbox : " + myGame.getClass().getSimpleName(), 600, 480, myGame);
+            engine.start();
         } catch (Exception excp) {
             excp.printStackTrace();
             System.exit(-1);

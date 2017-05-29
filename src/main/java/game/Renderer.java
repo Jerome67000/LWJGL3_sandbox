@@ -1,5 +1,8 @@
 package game;
 
+import engine.EngineUtils;
+import engine.graphics.ShaderProgram;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -7,8 +10,13 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer {
 
-    public void init() {
+    ShaderProgram shaderProgram;
 
+    public void init() throws Exception {
+        shaderProgram = new ShaderProgram();
+        shaderProgram.createVertexShader(EngineUtils.loadRessource("/resources/vertex.glsl"));
+        shaderProgram.createFragmentShader(EngineUtils.loadRessource("/resources/fragment.glsl"));
+        shaderProgram.link();
     }
 
     public void clear() {

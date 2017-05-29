@@ -19,7 +19,11 @@ public class MyGame implements GameApplication {
 
     @Override
     public void init() {
-        renderer.init();
+        try {
+            renderer.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

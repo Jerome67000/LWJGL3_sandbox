@@ -49,18 +49,12 @@ public class MyGame implements GameApplication {
 
     @Override
     public void render(Window window) {
-        if (window.isResized()) {
-            System.out.println("LOG glViewport(): window resized to : " + window.getWidth() + "*" + window.getHeight());
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
-
         window.setClearColor(color, color, color, 0.0f);
-        renderer.clear();
+        renderer.render(window);
     }
 
     @Override
     public void cleanup() {
-
+        renderer.cleanup();
     }
 }

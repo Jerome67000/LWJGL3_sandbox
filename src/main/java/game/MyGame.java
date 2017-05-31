@@ -2,6 +2,7 @@ package game;
 
 import engine.GameApplication;
 import engine.Window;
+import engine.graphics.Mesh;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
@@ -9,9 +10,25 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 public class MyGame implements GameApplication {
 
+    private Mesh triMesh;
     private int direction = 0;
     private float color = 0.0f;
     private final Renderer renderer;
+
+    private float[] tri =  new float[]{
+        0.0f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f
+    };
+
+    float[] quad = new float[]{
+            -0.5f,  0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            0.5f,  0.5f, 0.0f,
+            0.5f,  0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+    };
 
     public MyGame() {
         renderer = new Renderer();
@@ -21,6 +38,8 @@ public class MyGame implements GameApplication {
     public void init() {
         try {
             renderer.init();
+            triMesh = new Mesh(quad);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,11 +69,12 @@ public class MyGame implements GameApplication {
     @Override
     public void render(Window window) {
         window.setClearColor(color, color, color, 0.0f);
-        renderer.render(window);
+        renderer.render(window, triMesh);
     }
 
     @Override
     public void cleanup() {
         renderer.cleanup();
+        triMesh.cleanUp();
     }
 }

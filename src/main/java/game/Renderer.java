@@ -2,6 +2,7 @@ package game;
 
 import engine.EngineUtils;
 import engine.Window;
+import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import org.lwjgl.system.MemoryUtil;
 
@@ -16,8 +17,6 @@ import static org.lwjgl.opengl.GL30.*;
 public class Renderer {
 
     ShaderProgram shaderProgram;
-    private int vaoId;
-    private int vboId;
 
     public Renderer() {
     }
@@ -27,37 +26,9 @@ public class Renderer {
         shaderProgram.createVertexShader(EngineUtils.loadResource("/vertex.glsl"));
         shaderProgram.createFragmentShader(EngineUtils.loadResource("/fragment.glsl"));
         shaderProgram.link();
-
-        float[] vertices = new float[]{
-                0.0f,  0.5f, 0.0f,
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f
-        };
-
-        FloatBuffer verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
-        verticesBuffer.put(vertices).flip();
-
-        // vertex array creation
-        vaoId = glGenVertexArrays();
-        glBindVertexArray(vaoId);
-
-        // vertex buffer creation
-        vboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
-        MemoryUtil.memFree(verticesBuffer);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-        // Unbind the VBO
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        // Unbind the VAO
-        glBindVertexArray(0);
-
     }
 
-    public void render(Window window) {
+    public void render(Window window, Mesh mesh) {
         clear();
 
         if (window.isResized()) {
@@ -68,16 +39,14 @@ public class Renderer {
 
         shaderProgram.bind();
 
-        glBindVertexArray(vaoId);
+        // Draw the mesh
+        glBindVertexArray(mesh.getVaoId());
         glEnableVertexAttribArray(0);
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glDisableVertexAttribArray(vaoId);
+            glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount()); // TODO try with count to 2
+        glDisableVertexAttribArray(mesh.getVaoId());
         glBindVertexArray(0);
 
         shaderProgram.unbind();
-
     }
 
     public void clear() {
@@ -85,6 +54,8 @@ public class Renderer {
     }
 
     public void cleanup() {
-
+        if (shaderProgram != null) {
+            shaderProgram.cleanup();
+        }
     }
 }

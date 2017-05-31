@@ -31,22 +31,26 @@ public class Renderer {
     public void render(Window window, Mesh mesh) {
         clear();
 
-        if (window.isResized()) {
-            System.out.println("LOG glViewport(): window resized to : " + window.getWidth() + "*" + window.getHeight());
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
+        handleWindowRezise(window);
 
         shaderProgram.bind();
 
         // Draw the mesh
         glBindVertexArray(mesh.getVaoId());
         glEnableVertexAttribArray(0);
-            glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount()); // TODO try with count to 2
+            glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(mesh.getVaoId());
         glBindVertexArray(0);
 
         shaderProgram.unbind();
+    }
+
+    private void handleWindowRezise(Window window) {
+        if (window.isResized()) {
+            System.out.println("LOG glViewport(): window resized to : " + window.getWidth() + "*" + window.getHeight());
+            glViewport(0, 0, window.getWidth(), window.getHeight());
+            window.setResized(false);
+        }
     }
 
     public void clear() {

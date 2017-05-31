@@ -15,20 +15,20 @@ public class MyGame implements GameApplication {
     private float color = 0.0f;
     private final Renderer renderer;
 
-    private float[] tri =  new float[]{
-        0.0f,  0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f
-    };
-
-    float[] quad = new float[]{
-            -0.5f,  0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f,  0.5f, 0.0f,
-            0.5f,  0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-    };
+//    private float[] tri =  new float[]{
+//        0.0f,  0.5f, 0.0f,
+//        -0.5f, -0.5f, 0.0f,
+//        0.5f, -0.5f, 0.0f
+//    };
+//
+//    float[] quad = new float[]{
+//            -0.5f,  0.5f, 0.0f,
+//            -0.5f, -0.5f, 0.0f,
+//            0.5f,  0.5f, 0.0f,
+//            0.5f,  0.5f, 0.0f,
+//            -0.5f, -0.5f, 0.0f,
+//            0.5f, -0.5f, 0.0f,
+//    };
 
     public MyGame() {
         renderer = new Renderer();
@@ -38,7 +38,16 @@ public class MyGame implements GameApplication {
     public void init() {
         try {
             renderer.init();
-            triMesh = new Mesh(quad);
+            float[] positions = new float[]{
+                    -0.5f,  0.5f, 0.0f,
+                    -0.5f, -0.5f, 0.0f,
+                    0.5f, -0.5f, 0.0f,
+                    0.5f,  0.5f, 0.0f,
+            };
+            int[] indices = new int[]{
+                    0, 1, 3, 3, 1, 2,
+            };
+            triMesh = new Mesh(positions, indices);
 
         } catch (Exception e) {
             e.printStackTrace();

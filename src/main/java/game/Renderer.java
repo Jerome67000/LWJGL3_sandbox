@@ -37,7 +37,8 @@ public class Renderer {
 
         // Draw the mesh
         glBindVertexArray(mesh.getVaoId());
-        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(0); // position
+        glEnableVertexAttribArray(1); // colours
             glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(mesh.getVaoId());
         glBindVertexArray(0);

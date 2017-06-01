@@ -16,11 +16,13 @@ public class Mesh {
     private int vaoId;
     private int posVboId;
     private int idxVboId;
+    private int colVboId;
     private int vertexCount;
 
-    public Mesh(float[] positions, int indices[]) {
+    public Mesh(float[] positions, float[] colours, int indices[]) {
 
         FloatBuffer posBuffer = null;
+        FloatBuffer colBuffer = null;
         IntBuffer indicesBuffer = null;
         try {
             vertexCount = indices.length;
@@ -29,7 +31,7 @@ public class Mesh {
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
 
-            // vertex buffer creation
+            // positions VBO
             posVboId = glGenBuffers();
             posBuffer = MemoryUtil.memAllocFloat(positions.length);
             posBuffer.put(positions).flip();
@@ -37,7 +39,15 @@ public class Mesh {
             glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-            // index buffer creation
+            // colour VBO
+            colVboId = glGenBuffers();
+            colBuffer = MemoryUtil.memAllocFloat(colours.length);
+            colBuffer.put(colours).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, colVboId);
+            glBufferData(GL_ARRAY_BUFFER, colBuffer, GL_STATIC_DRAW);
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+
+            // indicies VBO
             idxVboId = glGenBuffers();
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
             indicesBuffer.put(indices).flip();
@@ -49,6 +59,9 @@ public class Mesh {
         } finally {
             if (posBuffer  != null) {
                 MemoryUtil.memFree(posBuffer);
+            }
+            if (colBuffer != null) {
+                MemoryUtil.memFree(colBuffer);
             }
             if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
@@ -71,6 +84,7 @@ public class Mesh {
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(posVboId);
+        glDeleteBuffers(colVboId);
         glDeleteBuffers(idxVboId);
 
         // Delete the VAO

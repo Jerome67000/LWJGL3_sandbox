@@ -14,34 +14,19 @@ public class MyGame implements GameApplication {
     private float color = 0.0f;
     private final Renderer renderer;
 
-//    private float[] tri =  new float[]{
-//        0.0f,  0.5f, 0.0f,
-//        -0.5f, -0.5f, 0.0f,
-//        0.5f, -0.5f, 0.0f
-//    };
-//
-//    float[] quad = new float[]{
-//            -0.5f,  0.5f, 0.0f,
-//            -0.5f, -0.5f, 0.0f,
-//            0.5f,  0.5f, 0.0f,
-//            0.5f,  0.5f, 0.0f,
-//            -0.5f, -0.5f, 0.0f,
-//            0.5f, -0.5f, 0.0f,
-//    };
-
     public MyGame() {
         renderer = new Renderer();
     }
 
     @Override
-    public void init() {
+    public void init(Window window) {
         try {
-            renderer.init();
+            renderer.init(window);
             float[] positions = new float[]{
-                    -0.5f,  0.5f, 0.0f,
-                    -0.5f, -0.5f, 0.0f,
-                    0.5f, -0.5f, 0.0f,
-                    0.5f,  0.5f, 0.0f
+                    -0.5f,  0.5f, -1.05f,
+                    -0.5f, -0.5f, -1.05f,
+                    0.5f, -0.5f, -1.05f,
+                    0.5f,  0.5f, -1.05f
             };
             float[] colours = new float[]{
                     0.5f, 0.0f, 0.0f,

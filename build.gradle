@@ -16,12 +16,18 @@ switch ( OperatingSystem.current() ) {
 }
 
 project.ext.lwjglVersion = "3.1.2"
+project.ext.jomlVersion = "1.9.3"
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 dependencies {
+    compile "org.joml:joml:${jomlVersion}"
+
     compile "org.lwjgl:lwjgl:${lwjglVersion}"
     compile "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
     compile "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}"

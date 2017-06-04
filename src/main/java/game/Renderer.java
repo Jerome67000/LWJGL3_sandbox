@@ -1,9 +1,11 @@
 package game;
 
 import engine.EngineUtils;
+import engine.GameItem;
 import engine.Window;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
+import engine.graphics.Transformation;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -21,11 +23,13 @@ public class Renderer {
     private static final float FOV = (float) Math.toRadians(60.0f);
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.0f;
+    private final Transformation transformation;
     private Matrix4f projectionMatrix;
 
     ShaderProgram shaderProgram;
 
     public Renderer() {
+        transformation = new Transformation();
     }
 
     public void init(Window window) throws Exception {
@@ -35,26 +39,29 @@ public class Renderer {
         shaderProgram.link();
 
         shaderProgram.createUniform("projectionMatrix");
+        shaderProgram.createUniform("worldMatrix");
 
         float aspectRatio = (float) window.getWidth() / window.getHeight();
         projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
     }
 
-    public void render(Window window, Mesh mesh) {
+    public void render(Window window, GameItem[] gameItems) {
         clear();
 
         handleWindowRezise(window);
 
         shaderProgram.bind();
-        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
-        // Draw the mesh
-        glBindVertexArray(mesh.getVaoId());
-        glEnableVertexAttribArray(0); // position
-        glEnableVertexAttribArray(1); // colours
-            glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(mesh.getVaoId());
-        glBindVertexArray(0);
+        this.updateProjectionMatrix(window);
+
+        for (GameItem item : gameItems) {
+
+            // Set world matrix for this item
+            Matrix4f worldMatrix = transformation.getWorldMatrix(item.getPosition(),item.getRotation(),item.getScale());
+            shaderProgram.setUniform("worldMatrix", worldMatrix);
+
+            item.getMesh().render();
+        }
 
         shaderProgram.unbind();
     }
@@ -65,6 +72,12 @@ public class Renderer {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
+    }
+
+    private void updateProjectionMatrix(Window window) {
+        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+
     }
 
     public void clear() {

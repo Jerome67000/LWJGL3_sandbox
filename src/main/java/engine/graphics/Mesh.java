@@ -69,14 +69,16 @@ public class Mesh {
         }
     }
 
-    public int getVaoId() {
-        return vaoId;
+    public void render() {
+        // Draw the mesh
+        glBindVertexArray(vaoId);
+        glEnableVertexAttribArray(0); // position
+        glEnableVertexAttribArray(1); // colours
+        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
     }
-
-    public int getVertexCount() {
-        return vertexCount;
-    }
-
 
     public void cleanUp() {
         glDisableVertexAttribArray(0);

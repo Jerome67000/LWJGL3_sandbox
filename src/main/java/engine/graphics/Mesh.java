@@ -5,6 +5,8 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -14,9 +16,7 @@ import static org.lwjgl.opengl.GL30.*;
 public class Mesh {
 
     private int vaoId;
-    private int posVboId;
-    private int idxVboId;
-    private int colVboId;
+    private List<Integer> vboIds = new ArrayList<>();
     private int vertexCount;
 
     public Mesh(float[] positions, float[] colours, int indices[]) {
@@ -32,26 +32,29 @@ public class Mesh {
             glBindVertexArray(vaoId);
 
             // positions VBO
-            posVboId = glGenBuffers();
+            int vboId = glGenBuffers();
+            vboIds.add(vboId);
             posBuffer = MemoryUtil.memAllocFloat(positions.length);
             posBuffer.put(positions).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, posVboId);
+            glBindBuffer(GL_ARRAY_BUFFER, vboId);
             glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
             // colour VBO
-            colVboId = glGenBuffers();
+            vboId = glGenBuffers();
+            vboIds.add(vboId);
             colBuffer = MemoryUtil.memAllocFloat(colours.length);
             colBuffer.put(colours).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, colVboId);
+            glBindBuffer(GL_ARRAY_BUFFER, vboId);
             glBufferData(GL_ARRAY_BUFFER, colBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 
             // indicies VBO
-            idxVboId = glGenBuffers();
+            vboId = glGenBuffers();
+            vboIds.add(vboId);
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
             indicesBuffer.put(indices).flip();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -85,9 +88,9 @@ public class Mesh {
 
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(posVboId);
-        glDeleteBuffers(colVboId);
-        glDeleteBuffers(idxVboId);
+        for (int vboId : vboIds) {
+            glDeleteBuffers(vboId);
+        }
 
         // Delete the VAO
         glBindVertexArray(0);

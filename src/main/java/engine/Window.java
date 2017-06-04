@@ -64,6 +64,8 @@ public class Window {
         glfwShowWindow(windowHandle);
 
         GL.createCapabilities();
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     private void initGLFW() {

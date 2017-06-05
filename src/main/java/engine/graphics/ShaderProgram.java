@@ -74,6 +74,10 @@ public class ShaderProgram {
         }
     }
 
+    public void setUniform(String name, int value) {
+        glUniform1i(uniforms.get(name), value);
+    }
+
     public void link() throws Exception {
 
         glLinkProgram(programId);

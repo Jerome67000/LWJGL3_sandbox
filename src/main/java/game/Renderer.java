@@ -3,18 +3,11 @@ package game;
 import engine.EngineUtils;
 import engine.GameItem;
 import engine.Window;
-import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.graphics.Transformation;
 import org.joml.Matrix4f;
-import org.lwjgl.system.MemoryUtil;
-
-import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 
 
 public class Renderer {
@@ -40,6 +33,7 @@ public class Renderer {
 
         shaderProgram.createUniform("projectionMatrix");
         shaderProgram.createUniform("worldMatrix");
+        shaderProgram.createUniform("texture_sampler");
 
         float aspectRatio = (float) window.getWidth() / window.getHeight();
         projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
@@ -59,6 +53,7 @@ public class Renderer {
             // Set world matrix for this item
             Matrix4f worldMatrix = transformation.getWorldMatrix(item.getPosition(),item.getRotation(),item.getScale());
             shaderProgram.setUniform("worldMatrix", worldMatrix);
+            shaderProgram.setUniform("texture_sampler", 0);
 
             item.getMesh().render();
         }

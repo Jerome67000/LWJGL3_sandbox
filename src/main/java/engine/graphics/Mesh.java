@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -18,8 +19,10 @@ public class Mesh {
     private int vaoId;
     private List<Integer> vboIds = new ArrayList<>();
     private int vertexCount;
+    private Texture texture;
 
-    public Mesh(float[] positions, float[] colours, int indices[]) {
+    public Mesh(float[] positions, float[] texCoords, int indices[], Texture texture) {
+        this.texture = texture;
 
         FloatBuffer posBuffer = null;
         FloatBuffer colBuffer = null;
@@ -40,14 +43,14 @@ public class Mesh {
             glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-            // colour VBO
+            // coords VBO
             vboId = glGenBuffers();
             vboIds.add(vboId);
-            colBuffer = MemoryUtil.memAllocFloat(colours.length);
-            colBuffer.put(colours).flip();
+            colBuffer = MemoryUtil.memAllocFloat(texCoords.length);
+            colBuffer.put(texCoords).flip();
             glBindBuffer(GL_ARRAY_BUFFER, vboId);
             glBufferData(GL_ARRAY_BUFFER, colBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
             // indicies VBO
             vboId = glGenBuffers();
@@ -73,6 +76,10 @@ public class Mesh {
     }
 
     public void render() {
+        // Activate first texture unit
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture.getId());
+
         // Draw the mesh
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0); // position
@@ -91,6 +98,8 @@ public class Mesh {
         for (int vboId : vboIds) {
             glDeleteBuffers(vboId);
         }
+
+        texture.cleanup();
 
         // Delete the VAO
         glBindVertexArray(0);

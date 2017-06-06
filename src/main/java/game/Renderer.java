@@ -26,6 +26,8 @@ public class Renderer {
     }
 
     public void init(Window window) throws Exception {
+        window.setClearColor(0,0,0,0.0f);
+
         shaderProgram = new ShaderProgram();
         shaderProgram.createVertexShader(EngineUtils.loadResource("/vertex.glsl"));
         shaderProgram.createFragmentShader(EngineUtils.loadResource("/fragment.glsl"));
@@ -34,9 +36,6 @@ public class Renderer {
         shaderProgram.createUniform("projectionMatrix");
         shaderProgram.createUniform("worldMatrix");
         shaderProgram.createUniform("texture_sampler");
-
-        float aspectRatio = (float) window.getWidth() / window.getHeight();
-        projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
     }
 
     public void render(Window window, GameItem[] gameItems) {
@@ -47,13 +46,13 @@ public class Renderer {
         shaderProgram.bind();
 
         this.updateProjectionMatrix(window);
+        shaderProgram.setUniform("texture_sampler", 0);
 
         for (GameItem item : gameItems) {
 
             // Set world matrix for this item
             Matrix4f worldMatrix = transformation.getWorldMatrix(item.getPosition(),item.getRotation(),item.getScale());
             shaderProgram.setUniform("worldMatrix", worldMatrix);
-            shaderProgram.setUniform("texture_sampler", 0);
 
             item.getMesh().render();
         }

@@ -25,7 +25,7 @@ public class Mesh {
         this.texture = texture;
 
         FloatBuffer posBuffer = null;
-        FloatBuffer colBuffer = null;
+        FloatBuffer cooordsBuffer = null;
         IntBuffer indicesBuffer = null;
         try {
             vertexCount = indices.length;
@@ -46,10 +46,10 @@ public class Mesh {
             // coords VBO
             vboId = glGenBuffers();
             vboIds.add(vboId);
-            colBuffer = MemoryUtil.memAllocFloat(texCoords.length);
-            colBuffer.put(texCoords).flip();
+            cooordsBuffer = MemoryUtil.memAllocFloat(texCoords.length);
+            cooordsBuffer.put(texCoords).flip();
             glBindBuffer(GL_ARRAY_BUFFER, vboId);
-            glBufferData(GL_ARRAY_BUFFER, colBuffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, cooordsBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
             // indicies VBO
@@ -66,8 +66,8 @@ public class Mesh {
             if (posBuffer  != null) {
                 MemoryUtil.memFree(posBuffer);
             }
-            if (colBuffer != null) {
-                MemoryUtil.memFree(colBuffer);
+            if (cooordsBuffer != null) {
+                MemoryUtil.memFree(cooordsBuffer);
             }
             if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
@@ -83,10 +83,10 @@ public class Mesh {
         // Draw the mesh
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0); // position
-        glEnableVertexAttribArray(1); // colours
+        glEnableVertexAttribArray(1); // tex coords
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
     }
 

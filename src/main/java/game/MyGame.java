@@ -129,7 +129,6 @@ public class MyGame implements GameApplication {
             GameItem gameItem = new GameItem(mesh);
             gameItem.setPosition(0, 0, -2);
             gameItems = new GameItem[] { gameItem };
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -189,7 +188,6 @@ public class MyGame implements GameApplication {
 
     @Override
     public void render(Window window) {
-        window.setClearColor(0,0,0,0.0f);
         renderer.render(window, gameItems);
     }
 

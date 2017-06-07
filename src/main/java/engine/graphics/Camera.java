@@ -18,6 +18,10 @@ public class Camera {
         this.rotation = rotation;
     }
 
+    public void move(Vector3f offset) {
+        this.move(offset.x, offset.y, offset.z);
+    }
+
     public void move(float offsetX, float offsetY, float offsetZ) {
         if (offsetZ != 0) {
             position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;

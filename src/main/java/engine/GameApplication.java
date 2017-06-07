@@ -5,8 +5,8 @@ package engine;
  */
 public interface GameApplication {
     void init(Window window);
-    void input(Window window);
-    void update(float delta);
+    void input(Window window, MouseInput mouseInput);
+    void update(float delta, MouseInput mouseInput);
     void render(Window window);
     void cleanup();
 }

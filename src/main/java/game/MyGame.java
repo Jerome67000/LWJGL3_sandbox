@@ -3,25 +3,22 @@ package game;
 import engine.GameApplication;
 import engine.GameItem;
 import engine.Window;
+import engine.graphics.Camera;
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
-import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 
 public class MyGame implements GameApplication {
 
-    private int displxInc = 0;
-    private int displyInc = 0;
-    private int displzInc = 0;
-    private int scaleInc = 0;
-
     private GameItem[] gameItems = new GameItem[1];
     private final Renderer renderer;
+    private final Camera camera;
 
     public MyGame() {
         renderer = new Renderer();
+        camera = new Camera();
     }
 
     @Override
@@ -126,9 +123,23 @@ public class MyGame implements GameApplication {
 
             Texture texture = new Texture("/grassblock.png");
             Mesh mesh = new Mesh(positions, textCoords, indices, texture);
-            GameItem gameItem = new GameItem(mesh);
-            gameItem.setPosition(0, 0, -2);
-            gameItems = new GameItem[] { gameItem };
+            GameItem gameItem1 = new GameItem(mesh);
+            gameItem1.setScale(0.5f);
+            gameItem1.setPosition(0, 0, -2);
+
+            GameItem gameItem2 = new GameItem(mesh);
+            gameItem2.setScale(0.5f);
+            gameItem2.setPosition(0.5f, 0.5f, -2);
+
+            GameItem gameItem3 = new GameItem(mesh);
+            gameItem3.setScale(0.5f);
+            gameItem3.setPosition(0, 0, -2.5f);
+
+            GameItem gameItem4 = new GameItem(mesh);
+            gameItem4.setScale(0.5f);
+
+            gameItem4.setPosition(0.5f, 0, -2.5f);
+            gameItems = new GameItem[]{ gameItem1, gameItem2, gameItem3, gameItem4 };
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,59 +147,24 @@ public class MyGame implements GameApplication {
 
     @Override
     public void input(Window window) {
-        displyInc = 0;
-        displxInc = 0;
-        displzInc = 0;
-        scaleInc = 0;
         if (window.isKeyPressed(GLFW_KEY_UP)) {
-            displyInc = 1;
+            camera.move(0,0.1f,0);
         } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            displyInc = -1;
+            camera.move(0,-0.1f,0);
         } else if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-            displxInc = -1;
+            camera.move(-0.1f,0,0);
         } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-            displxInc = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_A)) {
-            displzInc = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_Q)) {
-            displzInc = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_Z)) {
-            scaleInc = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_X)) {
-            scaleInc = 1;
+            camera.move(0.1f,0,0);
         }
     }
 
     @Override
     public void update(float interval) {
-        for (GameItem gameItem : gameItems) {
-            // Update position
-            Vector3f itemPos = gameItem.getPosition();
-            float posx = itemPos.x + displxInc * 0.01f;
-            float posy = itemPos.y + displyInc * 0.01f;
-            float posz = itemPos.z + displzInc * 0.01f;
-            gameItem.setPosition(posx, posy, posz);
-
-            // Update scale
-            float scale = gameItem.getScale();
-            scale += scaleInc * 0.05f;
-            if ( scale < 0 ) {
-                scale = 0;
-            }
-            gameItem.setScale(scale);
-
-            // Update rotation angle
-            float rotation = gameItem.getRotation().x + 1.5f;
-            if ( rotation > 360 ) {
-                rotation = 0;
-            }
-            gameItem.setRotation(rotation, rotation, rotation);
-        }
     }
 
     @Override
     public void render(Window window) {
-        renderer.render(window, gameItems);
+        renderer.render(window, camera, gameItems);
     }
 
     @Override

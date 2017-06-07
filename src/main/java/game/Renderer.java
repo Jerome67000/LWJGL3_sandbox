@@ -3,6 +3,7 @@ package game;
 import engine.EngineUtils;
 import engine.GameItem;
 import engine.Window;
+import engine.graphics.Camera;
 import engine.graphics.ShaderProgram;
 import engine.graphics.Transformation;
 import org.joml.Matrix4f;
@@ -34,25 +35,27 @@ public class Renderer {
         shaderProgram.link();
 
         shaderProgram.createUniform("projectionMatrix");
-        shaderProgram.createUniform("worldMatrix");
+        shaderProgram.createUniform("modelViewMatrix");
         shaderProgram.createUniform("texture_sampler");
     }
 
-    public void render(Window window, GameItem[] gameItems) {
+    public void render(Window window, Camera camera, GameItem[] gameItems) {
         clear();
 
         handleWindowRezise(window);
 
         shaderProgram.bind();
-
-        this.updateProjectionMatrix(window);
         shaderProgram.setUniform("texture_sampler", 0);
 
-        for (GameItem item : gameItems) {
+        this.updateProjectionMatrix(window);
 
-            // Set world matrix for this item
-            Matrix4f worldMatrix = transformation.getWorldMatrix(item.getPosition(),item.getRotation(),item.getScale());
-            shaderProgram.setUniform("worldMatrix", worldMatrix);
+        // Update view Matrix
+        Matrix4f viewMatrix = transformation.getViewMatrix(camera);
+
+        for (GameItem item : gameItems) {
+            // Set model view matrix for this item
+            Matrix4f modelViewMatrix  = transformation.getModelViewMatrix(item, viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
             item.getMesh().render();
         }

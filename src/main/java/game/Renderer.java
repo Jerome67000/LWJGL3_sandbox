@@ -30,8 +30,8 @@ public class Renderer {
         window.setClearColor(0,0,0,0.0f);
 
         shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(EngineUtils.loadResource("/vertex.glsl"));
-        shaderProgram.createFragmentShader(EngineUtils.loadResource("/fragment.glsl"));
+        shaderProgram.createVertexShader(EngineUtils.loadResource("/shaders/vertex.glsl"));
+        shaderProgram.createFragmentShader(EngineUtils.loadResource("/shaders/fragment.glsl"));
         shaderProgram.link();
 
         shaderProgram.createUniform("projectionMatrix");

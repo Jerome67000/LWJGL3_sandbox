@@ -130,7 +130,7 @@ public class MyGame implements GameApplication {
                     4, 6, 7, 5, 4, 7,
             };
 
-            Texture texture = new Texture("/grassblock.png");
+            Texture texture = new Texture("/textures/grassblock.png");
             Mesh mesh = new Mesh(positions, textCoords, indices, texture);
             GameItem gameItem1 = new GameItem(mesh);
             gameItem1.setScale(0.5f);

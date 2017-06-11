@@ -4,6 +4,7 @@ import engine.EngineUtils;
 import engine.GameItem;
 import engine.Window;
 import engine.graphics.Camera;
+import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.graphics.Transformation;
 import org.joml.Matrix4f;
@@ -18,9 +19,7 @@ public class Renderer {
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.0f;
     private final Transformation transformation;
-    private Matrix4f projectionMatrix;
-
-    ShaderProgram shaderProgram;
+    private ShaderProgram shaderProgram;
 
     public Renderer() {
         transformation = new Transformation();
@@ -37,6 +36,8 @@ public class Renderer {
         shaderProgram.createUniform("projectionMatrix");
         shaderProgram.createUniform("modelViewMatrix");
         shaderProgram.createUniform("texture_sampler");
+        shaderProgram.createUniform("colour");
+        shaderProgram.createUniform("useColour");
     }
 
     public void render(Window window, Camera camera, GameItem[] gameItems) {
@@ -52,12 +53,15 @@ public class Renderer {
         // Update view Matrix
         Matrix4f viewMatrix = transformation.getViewMatrix(camera);
 
-        for (GameItem item : gameItems) {
+        for (GameItem gameItem : gameItems) {
+            Mesh mesh = gameItem.getMesh();
             // Set model view matrix for this item
-            Matrix4f modelViewMatrix  = transformation.getModelViewMatrix(item, viewMatrix);
+            Matrix4f modelViewMatrix  = transformation.getModelViewMatrix(gameItem, viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            shaderProgram.setUniform("colour", mesh.getColour());
+            shaderProgram.setUniform("useColour", mesh.isTextured() ?  0 : 1);
 
-            item.getMesh().render();
+            mesh.render();
         }
 
         shaderProgram.unbind();

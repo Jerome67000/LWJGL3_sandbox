@@ -6,6 +6,7 @@ import engine.MouseInput;
 import engine.Window;
 import engine.graphics.Camera;
 import engine.graphics.Mesh;
+import engine.graphics.OBJLoader;
 import engine.graphics.Texture;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -130,7 +131,7 @@ public class MyGame implements GameApplication {
                     4, 6, 7, 5, 4, 7,
             };
 
-            Mesh mesh = new Mesh(positions, textCoords, new float[]{}, indices);
+            Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
             Texture texture = new Texture("/textures/grassblock.png");
             mesh.setTexture(texture);
             GameItem gameItem1 = new GameItem(mesh);

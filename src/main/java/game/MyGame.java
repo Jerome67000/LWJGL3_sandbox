@@ -130,7 +130,7 @@ public class MyGame implements GameApplication {
                     4, 6, 7, 5, 4, 7,
             };
 
-            Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
+            Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
             GameItem gameItem = new GameItem(mesh);
             gameItem.setScale(0.5f);
             gameItem.setPosition(0, 0, -2);

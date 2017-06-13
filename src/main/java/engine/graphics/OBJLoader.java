@@ -55,18 +55,19 @@ public class OBJLoader {
                             Float.parseFloat(tokens[3]));
                     normals.add(vec3fNorm);
                     break;
+
+                // Face
                 case "f":
                     Face face = new Face(tokens[1], tokens[2], tokens[3]);
                     faces.add(face);
                     break;
+
                 default:
                     // Ignore other lines
                     break;
             }
         }
 
-
-//        return null;
         return reorderLists(vertices, textures, normals, faces);
     }
 
@@ -75,15 +76,41 @@ public class OBJLoader {
         float[] posArr = new float[posList.size() * 3];
         float[] textCoordArr = new float[posList.size() * 2];
         float[] normArr = new float[posList.size() * 3];
+        List<Integer> indicesList = new ArrayList<>();
 
+        int i = 0;
         for (Vector3f pos : posList) {
-            int currIndex = posList.indexOf(pos) * 3; // TODO i++ if indexOf is too slow
-            posArr[currIndex + 0] = pos.x;
-            posArr[currIndex + 1] = pos.y;
-            posArr[currIndex + 2] = pos.z;
+            posArr[i * 3] = pos.x;
+            posArr[i * 3 + 1] = pos.y;
+            posArr[i * 3 + 2] = pos.z;
+            i++;
         }
 
-        Mesh mesh = new Mesh(posArr, textCoordArr, normArr, indicesArr);
+        for (Face face : facesList) {
+            for (IndexGroup indices : face.getIndexGroups()) {
+
+                int posIndex = indices.idxPos;
+                indicesList.add(posIndex);
+
+                // Reorder texture coordinates
+                if (indices.idxTextCoord >= 0) {
+                    Vector2f textCoord = textCoordList.get(indices.idxTextCoord);
+                    textCoordArr[posIndex * 2] = textCoord.x;
+                    textCoordArr[posIndex * 2 + 1] = 1 - textCoord.y;
+                }
+
+                // Reorder vectornormals
+                if (indices.idxVecNormal >= 0) {
+                    Vector3f vecNormal = normList.get(indices.idxVecNormal);
+                    normArr[posIndex * 3] = vecNormal.x;
+                    normArr[posIndex * 3 + 1] = vecNormal.y;
+                    normArr[posIndex * 3 + 2] = vecNormal.z;
+                }
+            }
+        }
+
+        int[] indicesArr = indicesList.stream().mapToInt((Integer v) -> v).toArray();
+        return new Mesh(posArr, textCoordArr, normArr, indicesArr);
     }
 
     private static class Face {

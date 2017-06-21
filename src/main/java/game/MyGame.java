@@ -4,11 +4,10 @@ import engine.GameApplication;
 import engine.GameItem;
 import engine.MouseInput;
 import engine.Window;
-import engine.graphics.Camera;
-import engine.graphics.Mesh;
-import engine.graphics.OBJLoader;
+import engine.graphics.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -23,6 +22,9 @@ public class MyGame implements GameApplication {
     private final Camera camera;
 
     private final Vector3f cameraInc = new Vector3f();
+
+    private Vector3f ambientLight;
+    private PointLight pointLight;
 
 
     public MyGame() {
@@ -130,11 +132,23 @@ public class MyGame implements GameApplication {
                     4, 6, 7, 5, 4, 7,
             };
 
+            float reflectance = 1f;
+            Material material = new Material(new Vector4f(1.0f, 0.4f, 0.8f, 1.0f), reflectance);
+
             Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
+            mesh.setMaterial(material);
             GameItem gameItem = new GameItem(mesh);
             gameItem.setScale(0.5f);
             gameItem.setPosition(0, 0, -2);
             gameItems = new GameItem[]{gameItem};
+
+            ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+            Vector3f lightColour = new Vector3f(1, 1, 1);
+            Vector3f lightPosition = new Vector3f(0, 0, 1);
+            float lightIntensity = 1.0f;
+            pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
+            PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+            pointLight.setAttenuation(att);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -158,6 +172,13 @@ public class MyGame implements GameApplication {
         } else if (window.isKeyPressed(GLFW_KEY_X)) {
             cameraInc.y = 1;
         }
+
+        float lightPos = pointLight.getPosition().z;
+        if (window.isKeyPressed(GLFW_KEY_N)) {
+            this.pointLight.getPosition().z = lightPos + 0.1f;
+        } else if (window.isKeyPressed(GLFW_KEY_M)) {
+            this.pointLight.getPosition().z = lightPos - 0.1f;
+        }
     }
 
     @Override
@@ -175,7 +196,7 @@ public class MyGame implements GameApplication {
 
     @Override
     public void render(Window window) {
-        renderer.render(window, camera, gameItems);
+        renderer.render(window, camera, gameItems, ambientLight, pointLight);
     }
 
     @Override

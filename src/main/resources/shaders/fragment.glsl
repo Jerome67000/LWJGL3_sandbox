@@ -42,15 +42,6 @@ vec4 ambientC;
 vec4 diffuseC;
 vec4 speculrC;
 
-void main()
-{
-    setupColours(material, outTexCoord);
-
-    vec4 diffuseSpecularComp = calcPointLight(pointLight, mvVertexPos, mvVertexNormal);
-
-    fragColor = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
-}
-
 void setupColours(Material material, vec2 textCoord)
 {
     if (material.hasTexture == 1)
@@ -90,4 +81,11 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
     float distance = length(light_direction);
     float attenuationInv = light.att.constant + light.att.linear * distance + light.att.exponent * distance * distance;
     return (diffuseColour + specColour) / attenuationInv;
+}
+
+void main()
+{
+    setupColours(material, outTexCoords);
+    vec4 diffuseSpecularComp = calcPointLight(pointLight, mvVertexPos, mvVertexNormal);
+    fragColor = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 }

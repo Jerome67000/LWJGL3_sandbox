@@ -23,6 +23,7 @@ public class Mesh {
     private List<Integer> vboIds = new ArrayList<>();
     private int vertexCount;
     private Vector3f colour;
+    private Material material;
     private Texture texture;
 
     public Mesh(float[] positions, float[] texCoords, float[] normals, int indices[]) {
@@ -144,5 +145,13 @@ public class Mesh {
 
     public boolean isTextured() {
         return texture != null;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 }
